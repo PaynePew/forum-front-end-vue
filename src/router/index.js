@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import NotFound from "../views/NotFound.vue";
-import SignIn from "../views/SignIn.vue";
 
 Vue.use(VueRouter);
 
@@ -9,7 +8,12 @@ const routes = [
   {
     path: "/signin",
     name: "sign-in",
-    component: SignIn,
+    component: () => import("../views/SignIn.vue"),
+  },
+  {
+    path: "/signup",
+    name: "sing-up",
+    component: () => import("../views/SignUp.vue"),
   },
   {
     path: "*",
