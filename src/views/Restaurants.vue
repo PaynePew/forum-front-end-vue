@@ -9,6 +9,14 @@
         :initial-restaurant="restaurant"
       />
     </div>
+    <RestaurantsPagination
+      v-if="totalPage.length > 1"
+      :current-page="currentPage"
+      :total-page="totalPage"
+      :category-id="categoryId"
+      :previous-page="previousPage"
+      :next-page="nextPage"
+    />
   </div>
 </template>
 
@@ -16,6 +24,7 @@
 import NavTabs from "./../components/NavTabs.vue";
 import RestaurantCard from "./../components/RestaurantCard.vue";
 import RestaurantsNavPills from "./../components/RestaurantsNavPills.vue";
+import RestaurantsPagination from "./../components/RestaurantsPagination.vue";
 
 const dummyData = {
   restaurants: [
@@ -296,6 +305,7 @@ export default {
     NavTabs,
     RestaurantCard,
     RestaurantsNavPills,
+    RestaurantsPagination,
   },
   data() {
     return {
