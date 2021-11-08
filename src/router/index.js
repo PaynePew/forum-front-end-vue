@@ -34,9 +34,15 @@ const routes = [
   },
   {
     path: "/restaurants/top",
-    name: "users-top",
-    component: () => import("../views/UsersTop.vue"),
+    name: "restaurants-top",
+    component: () => import("../views/RestaurantsTop.vue"),
   },
+  {
+    path: "/restaurants/:id/dashboard",
+    name: "restaurant-dashboard",
+    component: () => import("../views/RestaurantDashboard"),
+  },
+
   {
     path: "/restaurants/:id",
     name: "restaurant-show",
