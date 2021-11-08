@@ -27,7 +27,7 @@
           class="page-link"
           aria-label="Previous"
           href="#"
-          :to="{ name: 'restaurants', query: { categroyId, page } }"
+          :to="{ name: 'restaurants', query: { categoryId, page } }"
         >
           {{ page }}
         </router-link>
