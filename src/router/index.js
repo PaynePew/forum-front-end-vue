@@ -7,7 +7,6 @@ import Restaurants from "../views/Restaurants.vue";
 Vue.use(VueRouter);
 
 const routes = [
-
   {
     path: "/",
     name: "root",
@@ -39,6 +38,11 @@ const routes = [
     component: () => import("../views/UsersTop.vue"),
   },
   {
+    path: "/restaurants/:id",
+    name: "restaurant-show",
+    component: () => import("../views/RestaurantShow.vue"),
+  },
+  {
     path: "/users/top",
     name: "users-top",
     component: () => import("../views/UsersTop.vue"),
@@ -52,7 +56,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  linkExactActiveClass:'active',
+  linkExactActiveClass: "active",
   routes,
 });
 
