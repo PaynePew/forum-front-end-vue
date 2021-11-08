@@ -4,7 +4,11 @@
     <div class="card-body">
       <div v-for="restaurant in restaurants" :key="restaurant.id">
         <h4>
-          <a href="#">{{ restaurant.name }}</a>
+          <router-link
+            :to="{ name: 'restaurant-show', params: { id: restaurant.id } }"
+            href="#"
+            >{{ restaurant.name }}</router-link
+          >
           <small>{{
             restaurant.Category ? restaurant.Category.name : "未分類"
           }}</small>
