@@ -8,6 +8,7 @@
           v-if="currentUser.isAdmin"
           type="button"
           class="btn btn-danger float-right"
+          @click.stop.prevent="handleDeleteButtonClick(comment.id)"
         >
           Delete
         </button>
@@ -15,7 +16,9 @@
           <a href="#"> {{ comment.User.name }} </a>
         </h3>
         <p>{{ comment.text }}</p>
-        <footer class="blockquote-footer">{{ comment.createdAt | fromNow }}</footer>
+        <footer class="blockquote-footer">
+          {{ comment.createdAt | fromNow }}
+        </footer>
       </blockquote>
       <hr />
     </div>
@@ -47,6 +50,12 @@ export default {
     return {
       currentUser: dummyUser.currentUser,
     };
+  },
+  methods: {
+    handleDeleteButtonClick(commentId) {
+      console.log("handleDelteButtonClick", commentId);
+      this.$emit("after-delete-comment", commentId);
+    },
   },
 };
 </script>
