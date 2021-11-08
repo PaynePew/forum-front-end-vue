@@ -21,7 +21,7 @@
         <button
           v-if="restaurant.isFavorited"
           type="button"
-          class="btn btn-danger btn-border favorite mr-2"
+          class="btn btn-danger btn-border favorite me-2"
           @click.stop.prevent="deleteFavorite"
         >
           移除最愛
@@ -29,7 +29,7 @@
         <button
           v-else
           type="button"
-          class="btn btn-primary btn-border favorite mr-2"
+          class="btn btn-primary btn-border favorite me-2"
           @click.stop.prevent="addFavorite"
         >
           加到最愛
@@ -37,7 +37,7 @@
         <button
           v-if="restaurant.isLiked"
           type="button"
-          class="btn btn-danger like mr-2"
+          class="btn btn-danger like me-2"
           @click.stop.prevent="deleteLike"
         >
           Unlike
@@ -45,7 +45,7 @@
         <button
           v-else
           type="button"
-          class="btn btn-primary like mr-2"
+          class="btn btn-primary like me-2"
           @click.stop.prevent="addLike"
         >
           Like

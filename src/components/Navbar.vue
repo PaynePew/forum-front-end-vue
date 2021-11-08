@@ -13,15 +13,15 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div id="navbarSupportedContent" class="navbar-collapse collapse">
-      <div class="ml-auto d-flex align-items-center">
+      <div class="ms-auto d-flex align-items-center">
         <!-- is user is admin -->
-        <router-link v-if="currentUser.isAdmin" class="text-white mr-3" to="#"
+        <router-link v-if="currentUser.isAdmin" class="text-white me-3" to="#"
           >管理員後台</router-link
         >
 
         <!-- is user is login -->
         <template v-if="isAuthenticated">
-          <router-link class="text-white mr-3" to="#"
+          <router-link class="text-white me-3" to="#"
             >{{ currentUser.name || "使用者" }} 您好</router-link
           >
           <button
