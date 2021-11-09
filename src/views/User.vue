@@ -11,8 +11,7 @@
     <div class="row">
       <div class="col-md-4">
         <!-- UserFollowingsCard -->
-        <!-- <UserFollowingsCard :followings="followings" /> -->
-
+        <UserFollowingsCard :followings="followings" />
         <!-- UserFollowersCard -->
         <!-- <UserFollowersCard :followers="followers" /> -->
       </div>
@@ -30,11 +29,11 @@
 </template>
 
 <script>
-import UserProfileCard from "./../components/UserProfileCard";
-// import UserFollowingsCard from "./../components/UserFollowingsCard";
 // import UserFollowersCard from "./../components/UserFollowersCard";
 // import UserCommentsCard from "./../components/UserCommentsCard";
 // import UserFavoritedRestaurantsCard from "./../components/UserFavoritedRestaurantsCard";
+import UserProfileCard from "../components/UserProfileCard";
+import UserFollowingsCard from "../components/UserFollowingsCard";
 const dummyData = {
   profile: {
     id: 1,
@@ -1306,18 +1305,17 @@ const dummyUser = {
 export default {
   components: {
     UserProfileCard,
-    // UserFollowingsCard,
     // UserFollowersCard,
     // UserCommentsCard,
     // UserFavoritedRestaurantsCard,
+    UserFollowingsCard,
   },
   data() {
     return {
-      // profile: [],
       followings: [],
       followers: [],
       comments: [],
-      FavoritedRestaurants: [],
+      favoritedRestaurants: [],
       user: [],
       currentUser: dummyUser.currentUser,
       isFollowed: false,
@@ -1340,6 +1338,7 @@ export default {
         followersLength: profile.Followers.length,
       };
       this.isFollowed = dummyData.isFollowed;
+      this.followings = [...this.followings, ...profile.Followings];
     },
   },
 };
