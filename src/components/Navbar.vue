@@ -15,13 +15,18 @@
     <div id="navbarSupportedContent" class="navbar-collapse collapse">
       <div class="ms-auto d-flex align-items-center">
         <!-- is user is admin -->
-        <router-link v-if="currentUser.isAdmin" class="text-white me-3" to="#"
+        <router-link
+          v-if="currentUser.isAdmin"
+          class="text-white me-3"
+          :to="{ name: 'user', params: { id: 1 } }"
           >管理員後台</router-link
         >
 
         <!-- is user is login -->
         <template v-if="isAuthenticated">
-          <router-link class="text-white me-3" to="#"
+          <router-link
+            class="text-white me-3"
+            :to="{ name: 'user', params: { id: currentUser.id } }"
             >{{ currentUser.name || "使用者" }} 您好</router-link
           >
           <button
