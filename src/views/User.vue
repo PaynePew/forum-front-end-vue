@@ -19,20 +19,20 @@
         <!-- UserCommentsCard -->
         <UserCommentsCard :comments="comments" />
         <!-- UserFavoritedRestaurantsCard -->
-        <!-- <UserFavoritedRestaurantsCard
+        <UserFavoritedRestaurantsCard
           :favorited-restaurants="favoritedRestaurants"
-        /> -->
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import UserFavoritedRestaurantsCard from "./../components/UserFavoritedRestaurantsCard";
 import UserProfileCard from "../components/UserProfileCard";
 import UserFollowingsCard from "../components/UserFollowingsCard";
 import UserFollowersCard from "../components/UserFollowersCard";
 import UserCommentsCard from "../components/UserCommentsCard";
+import UserFavoritedRestaurantsCard from "../components/UserFavoritedRestaurantsCard";
 const dummyData = {
   profile: {
     id: 1,
@@ -1304,10 +1304,10 @@ const dummyUser = {
 export default {
   components: {
     UserProfileCard,
-    // UserFavoritedRestaurantsCard,
     UserFollowingsCard,
     UserFollowersCard,
     UserCommentsCard,
+    UserFavoritedRestaurantsCard,
   },
   data() {
     return {
@@ -1340,6 +1340,10 @@ export default {
       this.followings = [...this.followings, ...profile.Followings];
       this.followers = [...this.followers, ...profile.Followers];
       this.comments = [...this.comments, ...profile.Comments];
+      this.favoritedRestaurants = [
+        ...this.favoritedRestaurants,
+        ...profile.FavoritedRestaurants,
+      ];
     },
   },
 };
