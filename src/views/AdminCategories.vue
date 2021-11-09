@@ -25,7 +25,7 @@
       </div>
     </form>
     <table class="table">
-      <thead class="thead-dark">
+      <thead class="table-dark">
         <tr>
           <th scope="col" width="60">#</th>
           <th scope="col">Category Name</th>
@@ -38,16 +38,45 @@
             {{ category.id }}
           </th>
           <td class="position-relative">
-            <div class="category-name">
+            <div v-show="!category.isEditing" class="category-name">
               {{ category.name }}
             </div>
+            <input
+              v-show="category.isEditing"
+              v-model="category.name"
+              type="text"
+              class="form-control"
+            />
+            <span
+              @click="handleCancel(category.id)"
+              v-show="category.isEditing"
+              class="cancel"
+              >X</span
+            >
           </td>
           <td class="d-flex justify-content-between">
-            <button type="button" class="btn btn-link mr-2">Edit</button>
+            <button
+              v-show="!category.isEditing"
+              type="button"
+              class="btn btn-link me-2"
+              @click.stop.prevent="toggleIsEditing(category.id)"
+            >
+              Edit
+            </button>
+            <button
+              v-show="category.isEditing"
+              type="button"
+              class="btn btn-link me-2"
+              @click.stop.prevent="
+                updateCategory({ categoryId: category.id, name: category.name })
+              "
+            >
+              Save
+            </button>
             <button
               @click.stop.prevent="deleteCategory(category.id)"
               type="button"
-              class="btn btn-link mr-2"
+              class="btn btn-link me-2"
             >
               Delete
             </button>
@@ -109,7 +138,11 @@ export default {
   methods: {
     // 4. 定義 `fetchCategories` 方法，把 `dummyData` 帶入 Vue 物件
     fetchCategories() {
-      this.categories = dummyData.categories;
+      this.categories = dummyData.categories.map((_category) => ({
+        ..._category,
+        isEditing: false,
+        nameCached: "",
+      }));
     },
     createCategory() {
       this.categories = [
@@ -126,6 +159,65 @@ export default {
         (_category) => _category.id !== categoryId
       );
     },
+    toggleIsEditing(categoryId) {
+      this.categories = this.categories.map((_category) => {
+        if (_category.id === categoryId) {
+          return {
+            ..._category,
+            isEditing: !_category.isEditing,
+            nameCached: _category.name,
+          };
+        }
+        return _category;
+      });
+    },
+    updateCategory({ categoryId, name }) {
+      this.toggleIsEditing(categoryId);
+      console.log("API todo...", name);
+    },
+    handleCancel(categoryId) {
+      this.categories = this.categories.map((_category) => {
+        if (_category.id === categoryId) {
+          return {
+            ..._category,
+            name: _category.nameCached,
+          };
+        }
+        return _category;
+      });
+      this.toggleIsEditing(categoryId);
+    },
   },
 };
 </script>
+
+<style scoped>
+.category-name {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  outline: 0;
+  cursor: auto;
+}
+
+.btn-link {
+  width: 62px;
+  text-decoration: none;
+}
+
+.cancel {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #aaaaaa;
+  border-radius: 50%;
+  user-select: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+</style>
