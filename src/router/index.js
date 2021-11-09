@@ -75,7 +75,7 @@ const routes = [
   },
   {
     path: "/admin/restaurants/:id/edit",
-    name: "amin-restaurant-edit",
+    name: "admin-restaurant-edit",
     component: () => import("../views/AdminRestaurantEdit.vue"),
   },
   {
