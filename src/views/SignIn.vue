@@ -1,6 +1,6 @@
 <template>
   <div class="container py-5">
-    <form action="" class="w-100" @submit.prevent.stop="handleSubmit">
+    <form action class="w-100" @submit.prevent.stop="handleSubmit">
       <div class="text-center mb-4">
         <h1 class="h3 mb-3 fw-normal">Sign In</h1>
       </div>
@@ -14,7 +14,7 @@
           class="form-control"
           placeholder="email"
           autocomplete="username"
-          required
+
           autofocus
         />
       </div>
@@ -29,7 +29,7 @@
           class="form-control"
           placeholder="password"
           autocomplete="current-password"
-          required
+
         />
       </div>
       <button class="btn btn-primary btn-lg w-100 mb-3" type="submit">
@@ -37,7 +37,9 @@
       </button>
 
       <div class="text-center mb-3">
-        <p><router-link to="/signup">Sign Up</router-link></p>
+        <p>
+          <router-link to="/signup">Sign Up</router-link>
+        </p>
       </div>
 
       <p class="mt-5 mb-3 text-muted text-center">&copy; 2021-2022</p>
@@ -46,6 +48,8 @@
 </template>
 
 <script>
+import authorizationAPI from "../apis/authorization";
+import { Toast } from "../utils/helpers";
 export default {
   data() {
     return {
@@ -55,11 +59,35 @@ export default {
   },
   methods: {
     handleSubmit() {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password,
-      });
-      console.log("data", data);
+      if (!this.email || !this.password) {
+        Toast.fire({
+          icon: "warning",
+          title: "請填入 email 和 password",
+        });
+        return;
+      }
+
+      authorizationAPI
+        .signIn({
+          email: this.email,
+          password: this.password,
+        })
+        .then((response) => {
+          const { data } = response;
+          if (data.status !== "success") {
+            throw new Error(data.message);
+          }
+          localStorage.setItem("token", data.token);
+          this.$router.push("/restaurants");
+        })
+        .catch((error) => {
+          this.password = "";
+          Toast.fire({
+            icon: "warning",
+            title: "請確認您輸入了正確的帳號密碼",
+          });
+          console.log("error", error);
+        });
     },
   },
 };
