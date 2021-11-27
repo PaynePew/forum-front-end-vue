@@ -122,7 +122,8 @@ export default {
           throw new Error(data.message);
         }
         localStorage.setItem("token", data.token);
-        this.$router.push({ name: "restaurants" });
+        this.$router.push({ name: "sign-in" });
+        
       } catch (error) {
         this.password = "";
         this.passwordCheck = "";

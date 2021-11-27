@@ -21,7 +21,7 @@
               v-if="user.id !== 1"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleUserRole(user.id)"
+              @click.stop.prevent="toggleUserRole(user)"
             >
               {{ user.isAdmin ? "set as user" : "set as admin" }}
             </button>
@@ -34,41 +34,9 @@
 
 <script>
 import AdminNav from "../components/AdminNav.vue";
-
-const dummyUsers = {
-  users: [
-    {
-      id: 1,
-      name: "root",
-      email: "root@example.com",
-      password: "$2a$10$fm1P4dqdhnKPR1UyD1yLDu.wuZwX9q/KpTalGM1uA/nckpBpEphSq",
-      isAdmin: true,
-      image: null,
-      createdAt: "2021-11-07T18:00:59.000Z",
-      updatedAt: "2021-11-07T18:00:59.000Z",
-    },
-    {
-      id: 2,
-      name: "user1",
-      email: "user1@example.com",
-      password: "$2a$10$h4st6rARGb4DHcwAPqHLEOWV9NQk9qNPKnCro.MAZSSOerz1Or79e",
-      isAdmin: false,
-      image: null,
-      createdAt: "2021-11-07T18:00:59.000Z",
-      updatedAt: "2021-11-07T18:00:59.000Z",
-    },
-    {
-      id: 3,
-      name: "user2",
-      email: "user2@example.com",
-      password: "$2a$10$S70KXTrhpc9suwzAfrKbyeNz3q1cWkm0BnN0pdYj.jK8TMuKHVEae",
-      isAdmin: false,
-      image: null,
-      createdAt: "2021-11-07T18:00:59.000Z",
-      updatedAt: "2021-11-07T18:00:59.000Z",
-    },
-  ],
-};
+import adminAPI from "./../apis/admin";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -82,14 +50,46 @@ export default {
   created() {
     this.fetchUsers();
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   methods: {
-    fetchUsers() {
-      this.users = [...this.users, ...dummyUsers.users];
+    async fetchUsers() {
+      try {
+        const { data } = await adminAPI.users.get();
+        this.users = [...this.users, ...data.users];
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "目前無法取得管理者資料，請稍後再試",
+        });
+      }
     },
-    toggleUserRole(userId) {
-      this.users.forEach((_user) => {
-        _user.id === userId ? (_user.isAdmin = !_user.isAdmin) : _user;
-      });
+    async toggleUserRole({ id, isAdmin }) {
+      try {
+        const willBeAdmin = !isAdmin;
+        const { data, statusText } = await adminAPI.users.update({
+          id,
+          isAdmin: willBeAdmin.toString(),
+        });
+        if (statusText !== "OK" || data.status !== "success") {
+          throw new Error(statusText);
+        }
+        this.users = this.users.map((user) => {
+          if (user.id !== id) {
+            return user;
+          }
+          return {
+            ...user,
+            isAdmin: willBeAdmin,
+          };
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "目前無法變更使用者權限",
+        });
+      }
     },
   },
 };
