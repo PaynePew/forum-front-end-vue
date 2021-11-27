@@ -89,75 +89,68 @@
 
 <script>
 import AdminNav from "@/components/AdminNav";
-import { v4 as uuidv4 } from "uuid";
-//  2. 定義暫時使用的資料
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: "中式料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 2,
-      name: "日本料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 3,
-      name: "義大利料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-    {
-      id: 4,
-      name: "墨西哥料理",
-      createdAt: "2019-06-22T09:00:43.000Z",
-      updatedAt: "2019-06-22T09:00:43.000Z",
-    },
-  ],
-};
+import adminAPI from "../apis/admin";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
     AdminNav,
   },
-  // 3. 定義 Vue 中使用的 data 資料
   data() {
     return {
       categories: [],
       newCategoryName: "",
     };
   },
-  // 5. 調用 `fetchCategories` 方法
   created() {
     this.fetchCategories();
   },
   methods: {
-    // 4. 定義 `fetchCategories` 方法，把 `dummyData` 帶入 Vue 物件
-    fetchCategories() {
-      this.categories = dummyData.categories.map((_category) => ({
-        ..._category,
-        isEditing: false,
-        nameCached: "",
-      }));
+    async fetchCategories() {
+      try {
+        const { data } = await adminAPI.categories.get();
+        this.categories = data.categories.map((_category) => ({
+          ..._category,
+          isEditing: false,
+          nameCached: "",
+        }));
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳分類，請稍號再試",
+        });
+      }
     },
-    createCategory() {
-      this.categories = [
-        ...this.categories,
-        {
-          id: uuidv4(),
+    async createCategory() {
+      try {
+        const { data } = await adminAPI.categories.create({
           name: this.newCategoryName,
-        },
-      ];
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法新增餐廳分類，請稍號再試",
+        });
+      }
       this.newCategoryName = "";
+      this.fetchCategories();
     },
-    deleteCategory(categoryId) {
-      this.categories = this.categories.filter(
-        (_category) => _category.id !== categoryId
-      );
+    async deleteCategory(categoryId) {
+      try {
+        const { data } = await adminAPI.categories.delete(categoryId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.fetchCategories();
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法更新餐廳分類，請稍號再試",
+        });
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map((_category) => {
@@ -171,9 +164,19 @@ export default {
         return _category;
       });
     },
-    updateCategory({ categoryId, name }) {
+    async updateCategory({ categoryId, name }) {
+      try {
+        const { data } = await adminAPI.categories.update({ categoryId, name });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法更新餐廳分類，請稍號再試",
+        });
+      }
       this.toggleIsEditing(categoryId);
-      console.log("API todo...", name);
     },
     handleCancel(categoryId) {
       this.categories = this.categories.map((_category) => {
