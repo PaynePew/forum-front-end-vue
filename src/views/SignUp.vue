@@ -77,8 +77,9 @@
   </div>
 </template>
 
-
 <script>
+import authorizationAPI from "../apis/authorization";
+import { Toast } from "../utils/helpers";
 export default {
   data() {
     return {
@@ -86,17 +87,51 @@ export default {
       email: "",
       password: "",
       passwordCheck: "",
+      isProcessing: false,
     };
   },
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck,
-      });
-      console.log("data", data);
+    async handleSubmit() {
+      try {
+        if (
+          !this.email ||
+          !this.password ||
+          !this.name ||
+          !this.passwordCheck
+        ) {
+          Toast.fire({
+            icon: "warning",
+            title: "請確認欄位都已填入",
+          });
+          return;
+        } else if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            icon: "warning",
+            title: "兩次密碼不一致",
+          });
+          return;
+        }
+        this.isProcessing = true;
+        const { data } = await authorizationAPI.singUp({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        localStorage.setItem("token", data.token);
+        this.$router.push({ name: "restaurants" });
+      } catch (error) {
+        this.password = "";
+        this.passwordCheck = "";
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "請確認註冊資訊是否正確",
+        });
+      }
     },
   },
 };
