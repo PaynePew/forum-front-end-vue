@@ -21,87 +21,8 @@
 </template>
 
 <script>
-const dummyData = {
-  restaurant: {
-    id: 1,
-    name: "Bert Schinner",
-    tel: "062-259-7097 x30183",
-    address: "00087 Ludwig Streets",
-    opening_hours: "08:00",
-    description: "est sit sunt",
-    image:
-      "https://loremflickr.com/320/240/restaurant,food/?random=60.47242417117435",
-    viewCounts: 0,
-    createdAt: "2021-11-07T18:00:59.000Z",
-    updatedAt: "2021-11-07T18:00:59.000Z",
-    CategoryId: 1,
-    Category: {
-      id: 1,
-      name: "中式料理",
-      createdAt: "2021-11-07T18:00:59.000Z",
-      updatedAt: "2021-11-07T18:00:59.000Z",
-    },
-    Comments: [
-      {
-        id: 1,
-        text: "Laboriosam quidem dolor et rerum ipsum repellendus.",
-        UserId: 2,
-        RestaurantId: 1,
-        createdAt: "2021-11-07T18:00:59.000Z",
-        updatedAt: "2021-11-07T18:00:59.000Z",
-        User: {
-          id: 2,
-          name: "user1",
-          email: "user1@example.com",
-          password:
-            "$2a$10$h4st6rARGb4DHcwAPqHLEOWV9NQk9qNPKnCro.MAZSSOerz1Or79e",
-          isAdmin: false,
-          image: null,
-          createdAt: "2021-11-07T18:00:59.000Z",
-          updatedAt: "2021-11-07T18:00:59.000Z",
-        },
-      },
-      {
-        id: 51,
-        text: "Accusamus quis corporis.",
-        UserId: 2,
-        RestaurantId: 1,
-        createdAt: "2021-11-07T18:00:59.000Z",
-        updatedAt: "2021-11-07T18:00:59.000Z",
-        User: {
-          id: 2,
-          name: "user1",
-          email: "user1@example.com",
-          password:
-            "$2a$10$h4st6rARGb4DHcwAPqHLEOWV9NQk9qNPKnCro.MAZSSOerz1Or79e",
-          isAdmin: false,
-          image: null,
-          createdAt: "2021-11-07T18:00:59.000Z",
-          updatedAt: "2021-11-07T18:00:59.000Z",
-        },
-      },
-      {
-        id: 101,
-        text: "Nesciunt quo blanditiis qui veritatis fugiat ea vitae modi.",
-        UserId: 1,
-        RestaurantId: 1,
-        createdAt: "2021-11-07T18:00:59.000Z",
-        updatedAt: "2021-11-07T18:00:59.000Z",
-        User: {
-          id: 1,
-          name: "root",
-          email: "root@example.com",
-          password:
-            "$2a$10$fm1P4dqdhnKPR1UyD1yLDu.wuZwX9q/KpTalGM1uA/nckpBpEphSq",
-          isAdmin: true,
-          image: null,
-          createdAt: "2021-11-07T18:00:59.000Z",
-          updatedAt: "2021-11-07T18:00:59.000Z",
-        },
-      },
-    ],
-  },
-};
+import restaurantsAPI from "./../apis/restaurants";
+import { Toast } from "./../utils/helpers";
 export default {
   data() {
     return {
@@ -109,16 +30,30 @@ export default {
     };
   },
   created() {
-    this.fetchRestaurants();
+    const { id: restaurantId } = this.$route.params;
+    this.fetchRestaurant(restaurantId);
   },
   methods: {
-    fetchRestaurants() {
-      this.restaurant = {
-        name: dummyData.restaurant.name,
-        categoryName: dummyData.restaurant.Category.name,
-        viewCounts: dummyData.restaurant.viewCounts,
-        commentsLength: dummyData.restaurant.Comments.length,
-      };
+    async fetchRestaurant(restaurantId) {
+      try {
+        const { data } = await restaurantsAPI.getRestaurantShow({
+          restaurantId,
+        });
+        const { restaurant } = data;
+        const { name, Category, viewCounts, Comments: comments } = restaurant;
+
+        this.restaurant = {
+          name,
+          categoryName: Category ? Category.name : "未分類",
+          viewCounts,
+          commentsLength: comments.length,
+        };
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳資料，請稍後再試",
+        });
+      }
     },
   },
 };
