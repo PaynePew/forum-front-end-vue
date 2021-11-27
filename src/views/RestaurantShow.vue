@@ -99,24 +99,39 @@ export default {
         });
       }
     },
-    afterDeleteComment(commentId) {
-      this.restaurantComments = this.restaurantComments.filter(
-        (_comment) => _comment.id !== commentId
-      );
+    async afterDeleteComment(commentId) {
+      try {
+        const { data } = await restaurantsAPI.comment.delete(commentId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        const { id: restaurantId } = this.$route.params;
+        this.fetchRestaurant(restaurantId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除評論，請稍後再試",
+        });
+      }
     },
-    afterCreateComment(payload) {
-      const { commentId, restaurantId, text } = payload;
-      const newComment = {
-        id: commentId,
-        RestaurantId: restaurantId,
-        User: {
-          id: this.currentUser.id,
-          name: this.currentUser.name,
-        },
-        text,
-        createdAt: new Date(),
-      };
-      this.restaurantComments = [...this.restaurantComments, newComment];
+    async afterCreateComment(payload) {
+      try {
+        const { restaurantId, text } = payload;
+        const { data } = await restaurantsAPI.comment.create({
+          text,
+          restaurantId,
+          userId: this.currentUser.userId,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.fetchRestaurant(restaurantId);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法新增評論，請稍後再試",
+        });
+      }
     },
   },
 };
