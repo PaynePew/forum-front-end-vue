@@ -142,12 +142,16 @@ export default {
       isLoading: true,
     };
   },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue,
+      };
+    },
+  },
   created() {
     this.fetchCategories();
-    this.restaurant = {
-      ...this.restaurant,
-      ...this.initialRestaurant,
-    };
   },
   methods: {
     async fetchCategories() {
@@ -187,7 +191,6 @@ export default {
         });
         return;
       }
-
       const form = e.target;
       const formData = new FormData(form);
       this.$emit("after-submit", formData);
