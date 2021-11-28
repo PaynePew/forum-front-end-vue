@@ -18,8 +18,8 @@ export default {
 };
 </script>
 
-<style>
-a {
-  text-decoration: none;
+<style scoped>
+main {
+  margin-top: 65px !important;
 }
 </style>
