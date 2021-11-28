@@ -148,11 +148,11 @@ export default {
 </script>
 
 <style scoped>
-.badge.badge-secondary {
+.badge.bg-secondary {
   padding: 0;
   margin: 8px 0;
   color: #bd2333;
-  background-color: transparent;
+  background-color: transparent !important;
 }
 
 .btn,

@@ -93,9 +93,9 @@ h1,
   font-family: serif;
 }
 
-.badge.badge-secondary {
+.badge.bg-secondary {
   color: inherit;
-  background-color: #e8e8e8;
+  background-color: #e8e8e8 !important;
   padding: 6px;
   font-size: 12.5px;
 }
