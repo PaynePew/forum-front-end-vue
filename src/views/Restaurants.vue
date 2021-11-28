@@ -56,17 +56,15 @@ export default {
   beforeRouteUpdate(to, from, next) {
     const { page, categoryId = "" } = to.query;
     this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId });
-    console.log("from", from);
     next();
   },
   methods: {
-    async fetchRestaurants({ queryPage, queryCategoryId }) {
+    async fetchRestaurants({ queryPage = "", queryCategoryId }) {
       try {
         const response = await restaurantsAPI.getRestaurants({
           page: queryPage,
           categoryId: queryCategoryId,
         });
-        console.log(response);
 
         // STEP 2：透過解構賦值，將所需要的資料從 response.data 取出
         const {
